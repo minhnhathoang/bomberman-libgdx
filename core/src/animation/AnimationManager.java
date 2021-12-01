@@ -23,6 +23,8 @@ public class AnimationManager {
     float posX, posY;
     boolean running;
 
+    final float scale = 3f;
+
     public AnimationManager(ResourceManager resourceManager) {
         map = new HashMap<>();
         this.resourceManager = resourceManager;
@@ -57,20 +59,21 @@ public class AnimationManager {
     public void render(SpriteBatch batch, float delta) {
         elapsedTime += delta;
         if (!running) {
-            elapsedTime = 0;
             batch.begin();
-            batch.draw(map.get(currentState).getKeyFrame(0, true), posX, posY, 18 * 3, 26 * 3);
+            batch.draw(map.get(currentState).getKeyFrame(0, true), posX, posY, 18 * scale / 20, 26 * scale / 20);
+            //batch.draw(map.get(10).getKeyFrame(elapsedTime, true), posX, posY, 16 * scale, 15 * scale);
             batch.end();
         } else {
             batch.begin();
-            batch.draw(map.get(currentState).getKeyFrame(elapsedTime, true), posX, posY, 18 * 3, 26 * 3);
+            batch.draw(map.get(currentState).getKeyFrame(elapsedTime, true), posX, posY, 18 * scale / 20, 26 * scale / 20);
+            //batch.draw(map.get(10).getKeyFrame(elapsedTime, true), posX, posY, 16 * scale, 15 * scale);
             batch.end();
         }
+
     }
 
     public void setCurrentState(int newState) {
         currentState = newState;
-        System.out.println(currentState);
     }
 
     public int getCurrentState() {

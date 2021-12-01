@@ -3,19 +3,29 @@ package screen;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.Bomberman;
 import resources.ResourceManager;
+import resources.Utils;
+
+import java.nio.file.Watchable;
 
 public class AbstractScreen implements Screen {
-    protected final Bomberman game;
-    protected final ResourceManager resource;
+    protected Bomberman game;
+    protected ResourceManager resource;
 
     protected Viewport viewport;
     protected OrthographicCamera camera;
@@ -34,12 +44,13 @@ public class AbstractScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
     }
 
     @Override
@@ -83,7 +94,6 @@ public class AbstractScreen implements Screen {
                 style.fontColor = new Color(252, 151, 0, 255);
             }
         });
-
         return textButton;
     }
 }

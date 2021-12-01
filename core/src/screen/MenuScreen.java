@@ -4,11 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import main.Bomberman;
 import resources.ResourceManager;
@@ -18,72 +23,11 @@ public class MenuScreen extends AbstractScreen {
     public MenuScreen(Bomberman game, ResourceManager resource) {
         super(game, resource);
 
+        viewport = new FitViewport(1000, 800);
+        stage = new Stage(viewport, game.batch);
+
         initBackground();
         initButton();
-        /*
-        Label.LabelStyle style = new Label.LabelStyle();
-        style.font = resource.bitmapFont;
-        style.fontColor = Color.RED;
-
-        Label titleLabel = new Label("BOMBERMAN", style);
-
-        Table table = new Table();
-
-        table.setFillParent(true);
-
-        //resource.bitmapFont.getData().setScale(0.5f);
-
-        TextButton.TextButtonStyle styleTextButton = new TextButton.TextButtonStyle();
-        styleTextButton.font = resource.bitmapFont;
-        styleTextButton.fontColor = Color.BLUE;
-
-        TextButton startButton = new TextButton("Start", styleTextButton);
-        startButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
-
-        final TextButton exitButton = new TextButton("Exit", styleTextButton);
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
-
-        table.add(titleLabel).padBottom(60.0f).colspan(2).row();
-        table.add(startButton).padBottom(60.0f).colspan(2).row();
-        table.add(exitButton).padBottom(60.0f).colspan(2).row();
-        table.addListener(new InputListener() {
-            @Override
-            public boolean keyDown(final InputEvent event, final int keycode) {
-                switch (keycode) {
-                    case Input.Keys.W:
-                    case Input.Keys.UP:
-                    case Input.Keys.S:
-                    case Input.Keys.DOWN:
-                        exitButton.setColor(Color.RED);
-                        exitButton.setText("ADDDDDDDDDDDDDDDDDDDDDDDD");
-                        break;
-                    case Input.Keys.SPACE:
-                    case Input.Keys.ENTER:
-                    case Input.Keys.BUTTON_A:
-                        exitButton.setVisible(true);
-                        break;
-                }
-                return super.keyDown(event, keycode);
-            }
-        });
-
-        stage = new Stage(new ScreenViewport(), game.batch);
-        stage.addActor(table);
-
-        stage.setKeyboardFocus(table);
-        Gdx.input.setInputProcessor(stage);
-
-         */
     }
 
     public void initBackground() {
@@ -124,7 +68,6 @@ public class MenuScreen extends AbstractScreen {
         table.add(exit).padBottom(50);
         table.setFillParent(true);
 
-        stage = new Stage(new ScreenViewport(), game.batch);
         stage.addActor(table);
         stage.setDebugAll(true);
 
@@ -132,8 +75,10 @@ public class MenuScreen extends AbstractScreen {
     }
 
     public void render(float delta) {
-        stage.act(delta);
-        stage.draw();
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        //stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
+        super.render(delta);
     }
 
     public void disposee() {

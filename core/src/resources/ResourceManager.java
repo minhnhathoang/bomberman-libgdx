@@ -31,13 +31,22 @@ public class ResourceManager {
     public TextureRegion[][] spritePlayerDown;
     public TextureRegion[][] spritePlayerRight;
 
+    public TextureRegion[][] mugshots;
+
+    // bomb
+    public TextureRegion[][] spriteBomb;
+
+    // bar
+    public TextureRegion bar;
+
 
     public ResourceManager() {
         assetManager = new AssetManager();
-        JsonReader jsonReader = new JsonReader();
 
         assetManager.load("player/player.atlas", TextureAtlas.class);
         assetManager.finishLoading();
+
+
         atlas = assetManager.get("player/player.atlas", TextureAtlas.class);
 
         // generate BitmapFont object from ttf file
@@ -45,7 +54,7 @@ public class ResourceManager {
         freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/arcadeclassic.ttf"));
         fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.size = 100;
-        fontParameter.color = Color.VIOLET;
+        fontParameter.color = Color.WHITE;
         fontParameter.borderStraight = true;
 
         font100px = freeTypeFontGenerator.generateFont(fontParameter);
@@ -56,6 +65,13 @@ public class ResourceManager {
         spritePlayerUp = atlas.findRegion("up").split(16, 24);
         spritePlayerDown = atlas.findRegion("down").split(16, 24);
         spritePlayerRight = atlas.findRegion("right").split(16, 24);
+
+        spriteBomb = atlas.findRegion("bomb").split(16, 16);
+
+        mugshots = atlas.findRegion("mugshots").split(32, 32);
+
+        bar = atlas.findRegion("bar");
+
     }
 
     public void dispose() {

@@ -1,23 +1,18 @@
 package main;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.ScreenUtils;
 import entity.Player;
-import map.Map;
-import processor.GameInputProcessor;
 import resources.ResourceManager;
 import screen.MenuScreen;
 
 public class Bomberman extends Game {
 
 	public static final String GAME_TITLE = "Bomberman | fps: %s";
+	public static final int WIDTH = 1000;
+	public static final int HEIGHT = 800;
 
 	// Renderer
 	public SpriteBatch batch;
@@ -28,8 +23,6 @@ public class Bomberman extends Game {
 	public Player player;
 
 	private MenuScreen menu;
-	private Map map;
-	OrthographicCamera camera;
 
 	@Override
 	public void create () {
@@ -37,17 +30,12 @@ public class Bomberman extends Game {
 		resource = new ResourceManager();
 
 		menu = new MenuScreen(this, resource);
-		map = new Map(this, resource);
-		map.loadMap("map/stage1.tmx");
-
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
-		camera.update();
 
 		this.setScreen(menu);
 	}
 
 	public void render () {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.graphics.setTitle(String.format(GAME_TITLE, Gdx.graphics.getFramesPerSecond()));
 		super.render();
 	}

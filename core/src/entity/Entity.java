@@ -3,8 +3,10 @@ package entity;
 import animation.AnimationManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import resources.ResourceManager;
 
 public abstract class Entity {
@@ -14,6 +16,11 @@ public abstract class Entity {
 
     protected float offsetX, offsetY;
     protected float speed;
+
+    protected Body body;
+    protected Vector2 position;
+
+
 
     public Entity(ResourceManager resourceManager) {
         animationManager = new AnimationManager(resourceManager);
@@ -34,5 +41,13 @@ public abstract class Entity {
         animationManager.setCurrentState(newStage);
     }
 
+    public abstract void createBody(World world);
 
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public Body getBody() {
+        return body;
+    }
 }
