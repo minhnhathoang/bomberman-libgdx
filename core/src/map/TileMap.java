@@ -1,6 +1,7 @@
 package map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -12,9 +13,14 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
+import entity.Box2dManager;
 import main.Bomberman;
 import resources.ResourceManager;
 import resources.Utils;
+
+import static resources.Utils.PPM;
+
 
 public class TileMap {
     private static final float TILE_SIZE = 16f;
@@ -43,26 +49,7 @@ public class TileMap {
     }
 
     public void buildBox(World world) {
-        MapObjects objects = tiledMap.getLayers().get("objects").getObjects();
 
-        System.out.println(objects.getCount());
-
-        for (MapObject object: objects) {
-            Rectangle rectangle = ((RectangleMapObject)object).getRectangle();
-
-            //create a dynamic within the world body (also can be KinematicBody or StaticBody
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.DynamicBody;
-            bodyDef.position.set(1, 1);
-            Body body = world.createBody(bodyDef);
-
-            //create a fixture for each body from the shape
-            Fixture fixture = body.createFixture(getShapeFromRectangle(rectangle), 0);
-            fixture.setFriction(0.1F);
-
-            //setting the position of the body's origin. In this case with zero rotation
-            body.setTransform(getTransformedCenterForRectangle(rectangle),0);
-        }
     }
 
     public static Shape getShapeFromRectangle(Rectangle rectangle){
@@ -81,7 +68,7 @@ public class TileMap {
     public void loadMap(String path) {
         tiledMap = new TmxMapLoader().load(path);
         //tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, Utils.GAME_SCALE, game.batch);
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, Utils.GAME_SCALE, game.batch);
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, Utils.GAME_SCALE / PPM, game.batch);
 
 
         //width = tiledMap.getLayers().getCount();
@@ -91,6 +78,7 @@ public class TileMap {
     public void render(OrthographicCamera camera) {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+
 
     }
 
@@ -117,5 +105,35 @@ public class TileMap {
 
     public void createBody(World world) {
 
+        Array<RectangleMapObject> wall = tiledMap.getLayers().get("wall").getObjects().getByType(RectangleMapObject.class);
+
+        for (RectangleMapObject rectObject : wall) {
+            rectObject.getProperties().get("x");
+            Rectangle rect = rectObject.getRectangle();
+            Box2dManager.createRectangle(
+                    new Vector2(rect.getX() + rect.getWidth() / 2f, rect.getY() + rect.getHeight() / 2f),
+                    rect.getWidth() / 2,
+                    rect.getHeight() / 2,
+                    world
+            );
+        }
+
+
+
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                TiledMapTileLayer.Cell cell = layer.getCell(i, j);
+                if (cell.getTile().getId() != 3) {
+
+                    float x = i * 16 + 16 / 2f;
+                    float y = j * 16 + 16 / 2f;
+
+                    Box2dManager.createRectangle(
+                            new Vector2(x, y),
+                            8, 8, world
+                    );
+                }
+            }
+        }
     }
 }

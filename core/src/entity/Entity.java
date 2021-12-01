@@ -33,8 +33,8 @@ public abstract class Entity {
 
     public abstract void update();
 
-    public void render(SpriteBatch batch, float delta) {
-        animationManager.render(batch, delta);
+    public void render(SpriteBatch batch, Vector2 position, float delta) {
+        animationManager.render(batch, position, delta);
     }
 
     public void setState(int newStage) {

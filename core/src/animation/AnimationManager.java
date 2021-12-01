@@ -4,12 +4,17 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import main.Bomberman;
 import resources.ResourceManager;
 
 import java.util.Arrays;
 import java.util.HashMap;
+
+import static resources.Utils.GAME_SCALE;
+import static resources.Utils.PPM;
+
 
 public class AnimationManager {
 
@@ -20,10 +25,9 @@ public class AnimationManager {
     int currentState;
     float elapsedTime;
 
-    float posX, posY;
-    boolean running;
+    float width, height;
 
-    final float scale = 3f;
+    boolean running;
 
     public AnimationManager(ResourceManager resourceManager) {
         map = new HashMap<>();
@@ -51,25 +55,25 @@ public class AnimationManager {
 
 
     public void update(float offsetX, float offsetY, boolean running) {
-        posX += offsetX;
-        posY += offsetY;
         this.running = running;
+
+        width = map.get(currentState).getKeyFrame(0, false).getRegionWidth() / PPM * GAME_SCALE;
+        height = map.get(currentState).getKeyFrame(0, false).getRegionHeight() / PPM * GAME_SCALE - 0.3f;
     }
 
-    public void render(SpriteBatch batch, float delta) {
+    public void render(SpriteBatch batch, Vector2 position, float delta) {
+        //width = 0;
+        //height = 0;
         elapsedTime += delta;
         if (!running) {
             batch.begin();
-            batch.draw(map.get(currentState).getKeyFrame(0, true), posX, posY, 18 * scale / 20, 26 * scale / 20);
-            //batch.draw(map.get(10).getKeyFrame(elapsedTime, true), posX, posY, 16 * scale, 15 * scale);
+            batch.draw(map.get(currentState).getKeyFrame(0, true), position.x - width / 2f, position.y - height / 2f, 18 / PPM * GAME_SCALE, 26 / PPM * GAME_SCALE);
             batch.end();
         } else {
             batch.begin();
-            batch.draw(map.get(currentState).getKeyFrame(elapsedTime, true), posX, posY, 18 * scale / 20, 26 * scale / 20);
-            //batch.draw(map.get(10).getKeyFrame(elapsedTime, true), posX, posY, 16 * scale, 15 * scale);
+            batch.draw(map.get(currentState).getKeyFrame(elapsedTime, true), position.x - width / 2f, position.y - height / 2f, 18 / PPM * GAME_SCALE, 26 / PPM * GAME_SCALE);
             batch.end();
         }
-
     }
 
     public void setCurrentState(int newState) {

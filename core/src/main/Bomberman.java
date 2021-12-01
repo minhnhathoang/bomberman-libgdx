@@ -11,8 +11,8 @@ import screen.MenuScreen;
 public class Bomberman extends Game {
 
 	public static final String GAME_TITLE = "Bomberman | fps: %s";
-	public static final int WIDTH = 1000;
-	public static final int HEIGHT = 800;
+	public static final int WIDTH = 1200;
+	public static final int HEIGHT = 1000;
 
 	// Renderer
 	public SpriteBatch batch;

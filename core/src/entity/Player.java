@@ -29,15 +29,15 @@ public class Player extends Entity {
     public Player(ResourceManager resourceManager) {
         super(resourceManager);
 
-        animationManager.addAnimation(Utils.PlayerState.UP.ordinal(), resourceManager.spritePlayerUp[0], 1/15f);
-        animationManager.addAnimation(Utils.PlayerState.DOWN.ordinal(), resourceManager.spritePlayerDown[0], 1/15f);
-        animationManager.addAnimation(Utils.PlayerState.RIGHT.ordinal(), resourceManager.spritePlayerRight[0], 1/15f);
-        animationManager.addAnimation(Utils.PlayerState.LEFT.ordinal(), resourceManager.spritePlayerRight[0], 1/15f, true);
+        animationManager.addAnimation(Utils.PlayerState.UP.ordinal(), resourceManager.spritePlayerUp[0], 1/10f);
+        animationManager.addAnimation(Utils.PlayerState.DOWN.ordinal(), resourceManager.spritePlayerDown[0], 1/10f);
+        animationManager.addAnimation(Utils.PlayerState.RIGHT.ordinal(), resourceManager.spritePlayerRight[0], 1/10f);
+        animationManager.addAnimation(Utils.PlayerState.LEFT.ordinal(), resourceManager.spritePlayerRight[0], 1/10f, true);
 
         animationManager.addAnimation(10, resourceManager.spriteBomb[0], 1/5f);
-        speed = 2/20f;
+        speed = 2f;
 
-        position = new Vector2(-300 / PPM, 330 / PPM);
+        position = new Vector2(24, 181);
 
     }
 
@@ -63,14 +63,12 @@ public class Player extends Entity {
         }
 
         body.setLinearVelocity(offsetX, offsetY);
-        System.out.println(body.getPosition().x);
-
 
         animationManager.update(offsetX, offsetY, offsetX != 0 || offsetY != 0);
     }
 
     public void createBody(World world) {
-        body = Box2dManager.createCircle(position, 100, 100, world);
+        body = Box2dManager.createCircle(position, 100, 24, 7, world);
         System.out.println("created body's player");
     }
 }

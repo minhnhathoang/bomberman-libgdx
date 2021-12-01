@@ -24,8 +24,8 @@ import static resources.Utils.PPM;
 
 public class GameScreen extends AbstractScreen {
 
-    private static float WIDTH = 1000;
-    private static float HEIGHT = 800;
+    private static float WIDTH = 1200;
+    private static float HEIGHT = 900;
 
     public TileMap tileMap;
     public Player player;
@@ -37,6 +37,8 @@ public class GameScreen extends AbstractScreen {
         super(game, resource);
 
         camera = new OrthographicCamera(WIDTH / PPM, HEIGHT / PPM);
+        camera.position.set(WIDTH / PPM / 2f, HEIGHT / PPM / 2f, 0);
+
         viewport = new FitViewport(WIDTH / PPM, HEIGHT / PPM, camera);
 
         box2DDebugRenderer = new Box2DDebugRenderer();
@@ -60,6 +62,8 @@ public class GameScreen extends AbstractScreen {
     }
 
     public void update(float delta) {
+        //camera.position.set(player.getBody().getPosition().x, 1.84f, 0);
+        //camera.update();
     }
 
     @Override
@@ -68,24 +72,26 @@ public class GameScreen extends AbstractScreen {
         handleInput();
         update(delta);
 
-        Gdx.gl.glClearColor(0, 0f, 0.8f, 1f);
+        Gdx.gl.glClearColor(0, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        player.getBody().getPosition().set(player.getPosition());
+        world.step(1 / 60f, 6, 2);
 
-        camera.position.set(player.getPosition(), 0);
-        camera.update();
+        tileMap.render(camera);
+        player.render(game.batch, player.getBody().getPosition(), delta);
+
 
         game.batch.setProjectionMatrix(camera.combined);
         box2DDebugRenderer.render(world, camera.combined);
+        showHud();
     }
 
 
     public void showHud() {
         game.batch.begin();
-        game.batch.draw(resource.bar, 0, 730, 252 * 3.5f, 20 * 3.5f);
-        game.batch.draw(resource.mugshots[0][0], 100, 730, 32 * 2, 32 * 2);
-        resource.font50px.draw(game.batch, "Score", 300, 770);
+        game.batch.draw(resource.bar, 0, 830 / PPM, 252 * 3.5f/ PPM, 20 * 3.5f/ PPM);
+        game.batch.draw(resource.mugshots[0][0], 100/ PPM, 835 / PPM, 32 * 2/ PPM, 32 * 2/ PPM);
+        //resource.font50px.draw(game.batch, "Score", 300/ PPM, 770/ PPM);
         game.batch.end();
     }
 }
