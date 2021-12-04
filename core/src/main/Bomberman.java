@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import entity.Player;
+import net.ConnectScreen;
 import resources.ResourceManager;
 import screen.MenuScreen;
 
@@ -14,24 +15,18 @@ public class Bomberman extends Game {
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 1000;
 
-	// Renderer
 	public SpriteBatch batch;
-	//
 	public ResourceManager resource;
 
-	//
-	public Player player;
-
-	private MenuScreen menu;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		resource = new ResourceManager();
 
-		menu = new MenuScreen(this, resource);
-
-		this.setScreen(menu);
+		//this.setScreen(new MenuScreen(this, resource));
+		this.setScreen(new MenuScreen(this, resource));
+		//this.setScreen(new ConnectScreen(this, resource));
 	}
 
 	public void render () {
@@ -42,9 +37,7 @@ public class Bomberman extends Game {
 
 	@Override
 	public void dispose () {
-		batch.dispose();
 		super.dispose();
-
-		resource.dispose();
+		batch.dispose();
 	}
 }

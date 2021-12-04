@@ -1,19 +1,18 @@
 package animation;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import main.Bomberman;
 import resources.ResourceManager;
 
-import java.util.Arrays;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import static resources.Utils.GAME_SCALE;
-import static resources.Utils.PPM;
+import static resources.Vars.GAME_SCALE;
+import static resources.Vars.PPM;
 
 
 public class AnimationManager {
@@ -28,15 +27,20 @@ public class AnimationManager {
     float width, height;
 
     boolean running;
+    boolean looping;
 
     public AnimationManager(ResourceManager resourceManager) {
         map = new HashMap<>();
         this.resourceManager = resourceManager;
+
+        elapsedTime = 0;
+        running = true;
     }
 
     public void addAnimation(int state, TextureRegion[] sprite, float frameDuration) {
         if (map.get(state) == null) {
-            map.put(state, new Animation<TextureRegion>(frameDuration, sprite));
+            Animation<TextureRegion> ani = new Animation<>(frameDuration, sprite);
+            map.put(state, ani);
         }
     }
 
@@ -53,35 +57,54 @@ public class AnimationManager {
         }
     }
 
-
-    public void update(float offsetX, float offsetY, boolean running) {
-        this.running = running;
-
-        width = map.get(currentState).getKeyFrame(0, false).getRegionWidth() / PPM * GAME_SCALE;
-        height = map.get(currentState).getKeyFrame(0, false).getRegionHeight() / PPM * GAME_SCALE - 0.3f;
-    }
-
-    public void render(SpriteBatch batch, Vector2 position, float delta) {
-        //width = 0;
-        //height = 0;
-        elapsedTime += delta;
+    public void render(SpriteBatch batch, Vector2 position) {
+        elapsedTime += Gdx.graphics.getDeltaTime();
+        if (looping == false) {
+            if (map.get(currentState).isAnimationFinished(elapsedTime)) {
+                return;
+            }
+        }
         if (!running) {
             batch.begin();
-            batch.draw(map.get(currentState).getKeyFrame(0, true), position.x - width / 2f, position.y - height / 2f, 18 / PPM * GAME_SCALE, 26 / PPM * GAME_SCALE);
+            batch.draw(map.get(currentState).getKeyFrame(0, true), position.x, position.y, width, height);
             batch.end();
         } else {
             batch.begin();
-            batch.draw(map.get(currentState).getKeyFrame(elapsedTime, true), position.x - width / 2f, position.y - height / 2f, 18 / PPM * GAME_SCALE, 26 / PPM * GAME_SCALE);
+            batch.draw(map.get(currentState).getKeyFrame(elapsedTime, looping), position.x, position.y, width, height);
             batch.end();
         }
     }
 
     public void setCurrentState(int newState) {
         currentState = newState;
+        width = map.get(currentState).getKeyFrame(0, false).getRegionWidth() / PPM * GAME_SCALE;
+        height = map.get(currentState).getKeyFrame(0, false).getRegionHeight() / PPM * GAME_SCALE;
     }
 
     public int getCurrentState() {
         return currentState;
+    }
+
+    public void setLooping(boolean looping) {
+        this.looping = looping;
+    }
+
+    public boolean isLooping() {
+        return this.looping;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    public boolean isRunning() {
+        return this.running;
+    }
+
+    public boolean isFinished() {
+        float delta = Gdx.graphics.getDeltaTime();
+        // elapsedTime += Gdx.graphics.getDeltaTime();
+        return map.get(currentState).isAnimationFinished(elapsedTime + delta);
     }
 
 }
