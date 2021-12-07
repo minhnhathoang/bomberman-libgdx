@@ -1,97 +1,64 @@
 package screen;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.utils.viewport.*;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import entity.Player;
 import main.Bomberman;
-import map.TileMap;
-import processor.GameContactListener;
-import processor.GameInputProcessor;
-import resources.ResourceManager;
-import resources.Utils;
+import manager.GameManager;
+import manager.SoundManager;
 
-import java.awt.*;
-
-import static resources.Utils.PPM;
+import static helper.Vars.PPM;
 
 public class GameScreen extends AbstractScreen {
 
     private static float WIDTH = 1200;
     private static float HEIGHT = 900;
 
-    public TileMap tileMap;
-    public Player player;
+    public GameManager gameManager;
 
-    private World world;
-    Box2DDebugRenderer box2DDebugRenderer;
+    float timer = 5f;
 
-    public GameScreen(Bomberman game, ResourceManager resource) {
-        super(game, resource);
+    public GameScreen() {
+        super();
 
         camera = new OrthographicCamera(WIDTH / PPM, HEIGHT / PPM);
         camera.position.set(WIDTH / PPM / 2f, HEIGHT / PPM / 2f, 0);
+        camera.update();
 
         viewport = new FitViewport(WIDTH / PPM, HEIGHT / PPM, camera);
 
-        box2DDebugRenderer = new Box2DDebugRenderer();
+        gameManager = new GameManager(batch);
 
-        world = new World(new Vector2(0, 0), true);
-
-
-
-
-        player = new Player(resource);
-        tileMap = new TileMap(game, resource);
-
-        player.createBody(world);
-        tileMap.createBody(world);
-
-        Gdx.input.setInputProcessor(new GameInputProcessor());
-    }
-
-    public void handleInput() {
-
-    }
-
-    public void update(float delta) {
-        //camera.position.set(player.getBody().getPosition().x, 1.84f, 0);
-        //camera.update();
+        SoundManager.playMusic("battle");
     }
 
     @Override
     public void render(float delta) {
-        player.update();
-        handleInput();
-        update(delta);
+        gameManager.update(delta);
 
-        Gdx.gl.glClearColor(0, 0f, 0f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        gameManager.render(batch, camera);
 
-        world.step(1 / 60f, 6, 2);
+        updateCamera();
 
-        tileMap.render(camera);
-        player.render(game.batch, player.getBody().getPosition(), delta);
-
-
-        game.batch.setProjectionMatrix(camera.combined);
-        box2DDebugRenderer.render(world, camera.combined);
-        showHud();
+        if (gameManager.player.getCurrentState() == Player.State.DEFEAT.ordinal()
+                || gameManager.player.getCurrentState() == Player.State.VICTORY.ordinal()) {
+            timer -= delta;
+            if (timer <= 0) {
+                timer = 3f;
+                Bomberman.getInstance().setScreen(new EndGameScreen(gameManager.player.getCurrentState()));
+            }
+        }
     }
 
+    public void updateCamera() {
+        Vector2 position = gameManager.player.getBody().getPosition();
 
-    public void showHud() {
-        game.batch.begin();
-        game.batch.draw(resource.bar, 0, 830 / PPM, 252 * 3.5f/ PPM, 20 * 3.5f/ PPM);
-        game.batch.draw(resource.mugshots[0][0], 100/ PPM, 835 / PPM, 32 * 2/ PPM, 32 * 2/ PPM);
-        //resource.font50px.draw(game.batch, "Score", 300/ PPM, 770/ PPM);
-        game.batch.end();
+        if (position.x > 6f) {
+            if (position.x < 10f) {
+                camera.position.set(position.x, HEIGHT / PPM / 2f, 0);
+                camera.update();
+            }
+        }
     }
 }

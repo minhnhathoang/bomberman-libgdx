@@ -1,7 +1,6 @@
 package processor;
 
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 
 public class GameInputProcessor extends InputAdapter {
     private static final int NUM_KEYS = 255;

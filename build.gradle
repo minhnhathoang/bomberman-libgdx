@@ -1,5 +1,5 @@
 buildscript {
-    
+
 
     repositories {
         mavenLocal()
@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        
+
 
     }
 }
@@ -51,7 +51,7 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        
+
     }
 }
 
@@ -68,6 +68,11 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        
+
+
+        implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+
     }
+
+
 }

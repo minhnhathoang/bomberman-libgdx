@@ -17,14 +17,16 @@ import entity.Player;
 import main.Bomberman;
 import manager.FontManager;
 import manager.ResourceManager;
+import map.TileMap;
 
-public class MenuScreen extends AbstractScreen {
+public class SelectScreen extends AbstractScreen {
 
     AnimationManager ani;
     Table table;
-    TextButton exit, start;
+    TextButton stage1, stage2, stage3;
+    TextButton back;
 
-    public MenuScreen() {
+    public SelectScreen() {
         super();
 
         viewport = new FitViewport(1000, 800);
@@ -32,61 +34,65 @@ public class MenuScreen extends AbstractScreen {
 
         table = new Table();
 
-        ani = new AnimationManager();
-        ani.addAnimation(Player.State.RIGHT.ordinal(), ResourceManager.INSTANCE.spritePlayerRight[0], 1 / 10f);
-        ani.setCurrentState(Player.State.RIGHT.ordinal());
-
         initButton();
     }
 
     public void initButton() {
 
-        TextureRegionDrawable background = new TextureRegionDrawable(new Texture("background.png"));
+        final TextureRegionDrawable background = new TextureRegionDrawable(new Texture("background.png"));
 
         table.setBackground(background);
 
-        // title
 
         // start button
-        start = this.createTextButton("start", table, 100, 100, 70);
-        start.addListener(new ClickListener() {
+        stage1 = this.createTextButton("stage1", table, 100, 100, 70);
+        stage1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent inputEvent, float x, float y) {
-                Bomberman.getInstance().setScreen(new SelectScreen());
-
+                TileMap.STAGE = 1;
+                Bomberman.getInstance().setScreen(new GameScreen());
             }
         });
 
-        /*
-        multiplayer = this.createTextButton("multiplayer", table, 100, 100, 70);
-        multiplayer.addListener(new ClickListener() {
+        stage2 = this.createTextButton("stage2", table, 100, 100, 70);
+        stage2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent inputEvent, float x, float y) {
-                Bomberman.getInstance().setScreen(new ConnectScreen());
-
+                TileMap.STAGE = 2;
+                Bomberman.getInstance().setScreen(new GameScreen());
             }
         });
 
-         */
-
-        // exit button
-        exit = this.createTextButton("exit", table, 100, 100, 70);
-        exit.addListener(new ClickListener() {
+        stage3 = this.createTextButton("stage3", table, 100, 100, 70);
+        stage3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent inputEvent, float x, float y) {
-                Gdx.app.exit();
+                TileMap.STAGE = 3;
+                Bomberman.getInstance().setScreen(new GameScreen());
             }
         });
 
-        // table.add(tilte).padBottom(300).row();
-        table.add(start).padBottom(20).row();
-        // table.add(multiplayer).padBottom(20).row();
-        table.add(exit).padBottom(20);
+        // back button
+        back = this.createTextButton("back", table, 100, 100, 70);
+        back.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent inputEvent, float x, float y) {
+                Bomberman.getInstance().setScreen(new MenuScreen());
+            }
+        });
+
+        table.padTop(200);
+        table.add(stage1).padBottom(20).row();
+        table.add(stage2).padBottom(20).row();
+        table.add(stage3).padBottom(20).row();
+
+        table.add(back).padBottom(20);
+
         table.setFillParent(true);
 
         stage.addActor(table);
-
         Gdx.input.setInputProcessor(stage);
+
     }
 
     public void render(float delta) {
@@ -96,7 +102,7 @@ public class MenuScreen extends AbstractScreen {
         //ani.render(game.batch, new Vector2(500, 500));
 
         batch.begin();
-        FontManager.drawText(batch, "Bomberman", 200, Color.LIME, 150, 650);
+        FontManager.drawText(batch, "Bomberman", 200, Color.YELLOW, 150, 650);
         batch.end();
 
         //ani.render(game.batch, new Vector2(100, 100));
@@ -105,7 +111,5 @@ public class MenuScreen extends AbstractScreen {
     public void dispose() {
         super.dispose();
         stage.dispose();
-        exit.setDisabled(true);
-        start.setDisabled(true);
     }
 }

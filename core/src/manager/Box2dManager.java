@@ -1,9 +1,9 @@
-package entity;
+package manager;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
-import static resources.Vars.GAME_SCALE;
+import static helper.Vars.GAME_SCALE;
 
 public class Box2dManager {
 
@@ -65,6 +65,21 @@ public class Box2dManager {
         float distance = b1.getFixtureList().get(0).getShape().getRadius()
                 + b2.getFixtureList().get(0).getShape().getRadius();
         return distance > Math.hypot(b1.getPosition().x - b2.getPosition().x, b1.getPosition().y - b2.getPosition().y);
+    }
+
+    public static boolean isColliding(Body b1, Body b2) {
+        float distance = b1.getFixtureList().get(0).getShape().getRadius()
+                + b2.getFixtureList().get(0).getShape().getRadius();
+        return distance >= Math.hypot(b1.getPosition().x - b2.getPosition().x, b1.getPosition().y - b2.getPosition().y);
+    }
+
+    public static boolean isStopped(Body body) {
+        return Math.abs(body.getLinearVelocity().x) <= 0.25f
+                && Math.abs(body.getLinearVelocity().y) <= 0.25f;
+    }
+
+    public static boolean isCollidingInCenter(Body b1, Body b2) {
+        return 0.3f >= Math.hypot(b1.getPosition().x - b2.getPosition().x, b1.getPosition().y - b2.getPosition().y);
     }
 
 }
