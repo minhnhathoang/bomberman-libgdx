@@ -2,7 +2,12 @@
 
 _OOP Assignment 2. (K65 UET-VNU)_
 
-Mô phỏng lại trò chơi Bomberman bằng Java, sử dụng libGDX.\
+Thành viên (N2)
+- 20020629 Nguyễn Thị Phương Anh
+- 20020063 Hoàng Minh Nhật
+
+Mô phỏng lại trò chơi Bomberman bằng Java, sử dụng libGDX.
+
 \
 ![stage1](images/sc2.png)
 
